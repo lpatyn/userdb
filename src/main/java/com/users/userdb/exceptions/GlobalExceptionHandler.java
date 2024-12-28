@@ -32,29 +32,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO<List<ValidationErrorDTO>>> invalidField(MethodArgumentNotValidException e) {
-        BindingResult result = e.getBindingResult();
-        List<ValidationErrorDTO> errorList = new ArrayList<>();
+        List<ValidationErrorDTO> errorList = e.getBindingResult().getFieldErrors().stream().map(
+                error -> {
+                    if (error.getField().equals("birthdate")) {
+                        Date value = (Date) error.getRejectedValue();
 
-        for (FieldError error : result.getFieldErrors()) {
-            if (error.getDefaultMessage() != null && !error.getField().equals("birthdate")) {
-                errorList.add(new ValidationErrorDTO(
-                        error.getField(), error.getDefaultMessage(),
-                        (String) error.getRejectedValue())
-                );
-            }
+                        if (value != null) {
+                            return new ValidationErrorDTO(
+                                    error.getField(), error.getDefaultMessage(),
+                                    DATE_FORMAT.format((Date) error.getRejectedValue()));
+                        }
+                        else return new ValidationErrorDTO(error.getField(), error.getDefaultMessage(), null);
+                    }
 
-            if (error.getDefaultMessage() != null && error.getField().equals("birthdate")) {
-                Date value = (Date) error.getRejectedValue();
-
-                if (value != null) {
-                    errorList.add(new ValidationErrorDTO(
-                            error.getField(), error.getDefaultMessage(),
-                            DATE_FORMAT.format((Date) error.getRejectedValue()))
-                    );
-                }
-                else errorList.add(new ValidationErrorDTO(error.getField(), error.getDefaultMessage(), null));
-            }
-        }
+                    return new ValidationErrorDTO(error.getField(),
+                            error.getDefaultMessage(), (String) error.getRejectedValue());
+                }).distinct().toList();
 
         return new ResponseEntity<>(
                 new ErrorDTO<>(false, "Invalid field data", errorList), HttpStatus.BAD_REQUEST
