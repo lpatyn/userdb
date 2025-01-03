@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErrorDTO<KeyValueErrorDTO>> entityNotFound(NoResourceFoundException e) {
+    public ResponseEntity<ErrorDTO<KeyValueErrorDTO>> resourceNotFound(NoResourceFoundException e) {
         return new ResponseEntity<>(
                 new ErrorDTO<>(false, "Requested resource not found",
                         new KeyValueErrorDTO("path", "/" + e.getResourcePath())),

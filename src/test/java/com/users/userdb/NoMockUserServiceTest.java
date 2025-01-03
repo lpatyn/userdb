@@ -22,10 +22,6 @@ public class NoMockUserServiceTest {
     @Test
     void createTest() throws Exception {
 
-        try {
-            userService.delete(1);
-        } catch (Exception ignored) {}
-
         NewUserDTO newUser = new NewUserDTO("Jorge", "Pruebas", "jorge@email.com",
                 DATE_FORMAT.parse("01/01/1990"), "prueba");
 
@@ -48,22 +44,29 @@ public class NoMockUserServiceTest {
             assertEquals(expected.getEmail(), found.getEmail());
             assertEquals(expected.getBirthdate(), found.getBirthdate());
         });
+
+        try {
+            userService.delete(1);
+        } catch (Exception ignored) {}
     }
 
     @Test
     void updateTest() throws Exception {
 
-        try {
-            userService.delete(1);
-        } catch (Exception ignored) {}
-
         NewUserDTO newUser = new NewUserDTO("Jorge", "Pruebas", "jorge@email.com",
                 DATE_FORMAT.parse("01/01/1990"), "prueba");
 
+        NewUserDTO newUser2 = new NewUserDTO("Jorge2", "Pruebas2", "jorge2@email.com",
+                DATE_FORMAT.parse("01/01/1990"), "prueba2");
+
         userService.create(newUser);
+        userService.create(newUser2);
 
         UserDTO expected = new UserDTO(1, "Jorgito", "Test", "test@email.com",
                 "01/01/1999");
+
+        UserDTO expectedUnchanged = new UserDTO(2, "Jorge2", "Pruebas2", "jorge2@email.com",
+                "01/01/1990");
 
         UpdateUserDTO toUpdate = new UpdateUserDTO("Jorgito", "Test", "test@email.com",
                 DATE_FORMAT.parse("01/01/1999"));
@@ -71,6 +74,8 @@ public class NoMockUserServiceTest {
         UserDTO updated = userService.update(1, toUpdate);
 
         UserDTO found = userService.findById(1);
+
+        UserDTO unchanged = userService.findById(2);
 
         assertAll(() -> {
             assertEquals(expected.getId(), updated.getId());
@@ -83,15 +88,21 @@ public class NoMockUserServiceTest {
             assertEquals(expected.getLastName(), found.getLastName());
             assertEquals(expected.getEmail(), found.getEmail());
             assertEquals(expected.getBirthdate(), found.getBirthdate());
+            assertEquals(expectedUnchanged.getId(), unchanged.getId());
+            assertEquals(expectedUnchanged.getName(), unchanged.getName());
+            assertEquals(expectedUnchanged.getLastName(), unchanged.getLastName());
+            assertEquals(expectedUnchanged.getEmail(), unchanged.getEmail());
+            assertEquals(expectedUnchanged.getBirthdate(), unchanged.getBirthdate());
         });
+
+        try {
+            userService.delete(1);
+            userService.delete(2);
+        } catch (Exception ignored) {}
     }
 
     @Test
     void changePasswordTest() throws Exception {
-
-        try {
-            userService.delete(1);
-        } catch (Exception ignored) {}
 
         NewUserDTO newUser = new NewUserDTO("Jorge", "Pruebas", "jorge@email.com",
                 DATE_FORMAT.parse("01/01/1990"), "prueba");
@@ -120,5 +131,9 @@ public class NoMockUserServiceTest {
             assertEquals(expected.getEmail(), found.getEmail());
             assertEquals(expected.getBirthdate(), found.getBirthdate());
         });
+
+        try {
+            userService.delete(1);
+        } catch (Exception ignored) {}
     }
 }

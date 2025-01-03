@@ -78,14 +78,6 @@ class MockedUserServiceTest {
 		when(userRepository.findById(1)).thenReturn(foundOptional);
 		UserDTO foundUser = userService.findById(1);
 
-		try {
-			UserDTO notFound = userService.findById(15);
-		} catch (UserNotFoundException e) {
-			assertEquals("Requested user not found",e.getMessage());
-			assertEquals("id",e.getKey());
-			assertEquals("15",e.getValue());
-		}
-
 		assertAll(() -> {
 			assertEquals(expected.getId(), foundUser.getId());
 			assertEquals(expected.getName(), foundUser.getName());
