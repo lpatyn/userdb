@@ -155,7 +155,7 @@ public class IntegrationTests {
                 .configure(SerializationFeature.WRAP_ROOT_VALUE , false)
                 .writer();
 
-        UserDTO comparator = new UserDTO(1, "Jorge", "Pruebas", "jorge@email.com",
+        UserDTO comparator = new UserDTO(1L, "Jorge", "Pruebas", "jorge@email.com",
                 "01/01/1990");
 
         NewUserDTO newUser = new NewUserDTO("Jorge", "Pruebas", "jorge@email.com",

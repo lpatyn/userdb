@@ -6,9 +6,10 @@ import com.users.userdb.dto.request.UpdateUserDTO;
 import com.users.userdb.dto.response.UserDTO;
 import com.users.userdb.entities.User;
 import com.users.userdb.exceptions.UserNotFoundException;
-import com.users.userdb.repositories.UserRepository;
-import com.users.userdb.repositories.interfaces.IUserRepository;
+import com.users.userdb.repositories.IUserRepository;
 import com.users.userdb.services.interfaces.IUserService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +22,10 @@ public class UserService implements IUserService {
 
     IUserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    @Autowired
+    ModelMapper mapper;
+
+    public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -38,7 +42,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO findById(int id) {
+    public UserDTO findById(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isEmpty()) throw new UserNotFoundException("id", "" + id);
@@ -53,7 +57,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserDTO create(NewUserDTO newUserDTO) {
-        User createdUser = userRepository.create(newUserDTO);
+        User createdUser = userRepository.save(mapper.map(newUserDTO, User.class));
 
         return new UserDTO(
                 createdUser.getId(), createdUser.getName(), createdUser.getLastName(),
@@ -62,7 +66,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO update(int id, UpdateUserDTO updateUserDTO) {
+    public UserDTO update(Long id, UpdateUserDTO updateUserDTO) {
         Optional<User> userToUpdate = userRepository.findById(id);
 
         if (userToUpdate.isEmpty()) throw new UserNotFoundException("id", "" + id);
@@ -74,7 +78,7 @@ public class UserService implements IUserService {
         user.setEmail(updateUserDTO.getEmail());
         user.setBirthdate(updateUserDTO.getBirthdate());
 
-        User updatedUser = userRepository.update(user);
+        User updatedUser = userRepository.save(user);
 
         return new UserDTO(
                 updatedUser.getId(), updatedUser.getName(), updatedUser.getLastName(),
@@ -92,7 +96,7 @@ public class UserService implements IUserService {
 
         user.setPassword(newPasswordDTO.getNewPassword());
 
-        User updatedUser = userRepository.update(user);
+        User updatedUser = userRepository.save(user);
 
         return new UserDTO(
                 updatedUser.getId(), updatedUser.getName(), updatedUser.getLastName(),
@@ -101,10 +105,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void delete(int id) {
-        boolean result = userRepository.delete(id);
+    public void delete(Long id) {
+        Optional<User> userToDelete = userRepository.findById(id);
 
-        if (!result) throw new UserNotFoundException("id", "" + id);
+        if (userToDelete.isEmpty()) throw new UserNotFoundException("id", "" + id);
+
+        User user = userToDelete.get();
+
+        userRepository.delete(user);
     }
 
 }

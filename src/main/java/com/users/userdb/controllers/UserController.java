@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @CrossOrigin(origins = "*")
-    public ResponseEntity<SuccessDTO<UserDTO>> findById(@PathVariable int id) {
+    public ResponseEntity<SuccessDTO<UserDTO>> findById(@PathVariable Long id) {
         return new ResponseEntity<>(new SuccessDTO<>(
                 true,
                 "User found",
@@ -57,7 +57,7 @@ public class UserController {
     @PutMapping("/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<SuccessDTO<UserDTO>> update(@Valid @RequestBody UpdateUserDTO updateUserDTO,
-                                                      @PathVariable int id) {
+                                                      @PathVariable Long id) {
         return new ResponseEntity<>(new SuccessDTO<>(
                 true,
                 "User modification success",
@@ -77,7 +77,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @CrossOrigin(origins = "*")
-    public ResponseEntity<SuccessDTO<String>> delete(@PathVariable int id) {
+    public ResponseEntity<SuccessDTO<String>> delete(@PathVariable Long id) {
         userService.delete(id);
         return new ResponseEntity<>(new SuccessDTO<>(
                 true,

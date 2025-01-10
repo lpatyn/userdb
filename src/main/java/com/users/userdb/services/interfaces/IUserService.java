@@ -10,10 +10,10 @@ import java.util.List;
 public interface IUserService {
 
     List<UserDTO> findAll();
-    UserDTO findById(int id);
+    UserDTO findById(Long id);
     UserDTO create(NewUserDTO newUserDTO);
-    UserDTO update(int id, UpdateUserDTO updateUserDTO);
+    UserDTO update(Long id, UpdateUserDTO updateUserDTO);
     UserDTO changePassword(NewPasswordDTO newPasswordDTO);
-    void delete(int id);
+    void delete(Long id);
 
 }
