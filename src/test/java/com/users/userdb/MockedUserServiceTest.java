@@ -33,13 +33,13 @@ class MockedUserServiceTest {
 	void findAllTest() throws Exception {
 		List<User> returnedUsers = new ArrayList<>();
 		returnedUsers.add(new User(1L, "Jorge", "Pruebas", "jorge@email.com",
-				DATE_FORMAT.parse("01/01/1990"), "prueba"));
+				DATE_FORMAT.parse("01/01/1990"), "prueba", null, null));
 		returnedUsers.add(new User(2L, "Test", "Pruebas", "test@email.com",
-				DATE_FORMAT.parse("15/01/1990"), "prueba"));
+				DATE_FORMAT.parse("15/01/1990"), "prueba", null, null));
 		returnedUsers.add(new User(3L, "Robert", "Pruebas", "robert@email.com",
-				DATE_FORMAT.parse("01/12/1990"), "prueba"));
+				DATE_FORMAT.parse("01/12/1990"), "prueba", null, null));
 		returnedUsers.add(new User(4L, "George", "Testing", "george@email.com",
-				DATE_FORMAT.parse("20/10/1990"), "prueba"));
+				DATE_FORMAT.parse("20/10/1990"), "prueba", null, null));
 
 		List<UserDTO> expectedUsers = new ArrayList<>();
 		expectedUsers.add(new UserDTO(1L, "Jorge", "Pruebas", "jorge@email.com",
@@ -68,7 +68,7 @@ class MockedUserServiceTest {
 	@Test
 	void findByIdTest() throws Exception {
 		Optional<User> foundOptional = Optional.of(new User(1L, "Jorge", "Pruebas",
-				"jorge@email.com", DATE_FORMAT.parse("01/01/1990"), "prueba"));
+				"jorge@email.com", DATE_FORMAT.parse("01/01/1990"), "prueba", null, null));
 
 		UserDTO expected = new UserDTO(1L, "Jorge", "Pruebas", "jorge@email.com",
 				"01/01/1990");
