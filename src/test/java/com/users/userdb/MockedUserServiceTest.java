@@ -1,5 +1,6 @@
 package com.users.userdb;
 
+import com.users.userdb.dto.request.NewUserDTO;
 import com.users.userdb.dto.response.UserDTO;
 import com.users.userdb.entities.User;
 import com.users.userdb.repositories.IUserRepository;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -22,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class MockedUserServiceTest {
+
+	@Mock
+	private ModelMapper mapper;
 
 	@Mock
 	private IUserRepository userRepository;
@@ -83,5 +88,31 @@ class MockedUserServiceTest {
 			assertEquals(expected.getEmail(), foundUser.getEmail());
 			assertEquals(expected.getBirthdate(), foundUser.getBirthdate());
 		});
+	}
+
+	@Test
+	void createTest() throws Exception {
+
+		NewUserDTO newUser = new NewUserDTO("Jorge", "Pruebas", "jorge@email.com",
+				DATE_FORMAT.parse("01/01/1990"), "prueba");
+
+		UserDTO expected = new UserDTO(1L, "Jorge", "Pruebas", "jorge@email.com",
+				"01/01/1990");
+
+		User user = new User(null, "Jorge", "Pruebas", "jorge@email.com",
+				DATE_FORMAT.parse("01/01/1990"), "prueba", null, null);
+
+		when(mapper.map(newUser, User.class)).thenReturn(user);
+		when(userRepository.save(user)).thenReturn(user);
+
+		UserDTO created = userService.create(newUser);
+
+		assertAll(() -> {
+			assertEquals(expected.getName(), created.getName());
+			assertEquals(expected.getLastName(), created.getLastName());
+			assertEquals(expected.getEmail(), created.getEmail());
+			assertEquals(expected.getBirthdate(), created.getBirthdate());
+		});
+
 	}
 }
